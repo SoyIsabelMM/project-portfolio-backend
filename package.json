@@ -1,0 +1,14 @@
+{
+  "name": "project-portfolio-backend",
+  "version": "1.0.0",
+  "description": "Express based backend services",
+  "main": "index.js",
+  "scripts": {
+    "start": "node --watch src/app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.3"
+  }
+}
