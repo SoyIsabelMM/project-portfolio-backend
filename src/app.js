@@ -1,4 +1,5 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const { celebrate, errors } = require('celebrate');
 require('dotenv').config();
@@ -11,7 +12,7 @@ const { createUser } = require('./controllers/users');
 mongoose.connect(MONGODB_CONNECTION_STRING);
 
 const app = express();
-app.use(express.json());
+app.use(bodyParser.json());
 
 // Public routes
 app.get('/', (_, res) => res.send('Project Portfolio'));
