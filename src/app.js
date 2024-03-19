@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const { celebrate } = require('celebrate');
+const { celebrate, errors } = require('celebrate');
 require('dotenv').config();
 
 const { PORT, MONGODB_CONNECTION_STRING } = process.env;
@@ -18,6 +18,7 @@ app.get('/', (_, res) => res.send('Project Portfolio'));
 app.get('/ping', (_, res) => res.send('pong'));
 app.post('/users', celebrate({ body: createUserValidator }), createUser);
 
+app.use(errors());
 app.listen(PORT, () => console.log(`Server ready on port ${PORT}.`));
 
 module.exports = app;
