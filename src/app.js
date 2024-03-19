@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const { celebrate, errors } = require('celebrate');
 require('dotenv').config();
 
-const { PORT, MONGODB_CONNECTION_STRING } = process.env;
+const { PORT = 3001, MONGODB_CONNECTION_STRING = '' } = process.env;
 
 const { createUserValidator } = require('./payload-validators');
 const { createUser } = require('./controllers/users');
