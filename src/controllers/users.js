@@ -1,10 +1,9 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+const { jwtSecret } = require('../utils/get-env-vars');
 const { HttpStatus, HttpResponseMessage } = require('../enums');
 const Users = require('../models/user');
-
-const { JWT_SECRET } = process.env;
 
 const createUser = async (req, res) => {
   const { email, password } = req.body;
@@ -39,7 +38,7 @@ const loginUser = async ({ body }, res) => {
     if (user) {
       const isPasswordValid = await bcrypt.compare(password, user.password);
       if (isPasswordValid) {
-        const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+        const token = jwt.sign({ _id: user._id }, jwtSecret, {
           expiresIn: '1w',
         });
 

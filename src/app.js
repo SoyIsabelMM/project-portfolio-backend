@@ -4,7 +4,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const { celebrate, errors } = require('celebrate');
 
-const { PORT = 3001, MONGODB_CONNECTION_STRING = '' } = process.env;
+const { port, mongoDbConnectionString } = require('./utils/get-env-vars');
 
 const {
   createUserValidator,
@@ -12,7 +12,7 @@ const {
 } = require('./payload-validators');
 const { createUser, loginUser } = require('./controllers/users');
 
-mongoose.connect(MONGODB_CONNECTION_STRING);
+mongoose.connect(mongoDbConnectionString);
 
 const app = express();
 app.use(express.json());
@@ -25,6 +25,6 @@ app.post('/users', celebrate({ body: createUserValidator }), createUser);
 app.post('/users/login', celebrate({ body: loginUserValidator }), loginUser);
 
 app.use(errors());
-app.listen(PORT, () => console.log(`Server ready on port ${PORT}.`));
+app.listen(port, () => console.log(`Server ready on port ${port}.`));
 
 module.exports = app;
