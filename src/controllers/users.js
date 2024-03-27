@@ -1,5 +1,7 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
+const { jwtSecret } = require('../utils/get-env-vars');
 const { HttpStatus, HttpResponseMessage } = require('../enums');
 const Users = require('../models/user');
 
@@ -14,13 +16,13 @@ const createUser = async (req, res) => {
 
     return res.status(HttpStatus.CREATED).json({ id });
   } catch (err) {
-    console.error(err.message);
     if (err.message.includes('duplicate key error')) {
       return res
-        .status(409)
+        .status(HttpStatus.CONFLICT)
         .json({ message: HttpResponseMessage.ALREADY_EXISTS });
     }
 
+    console.error(err.message);
     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
       message: HttpResponseMessage.INTERNAL_SERVER_ERROR,
       details: err.message,
@@ -28,6 +30,34 @@ const createUser = async (req, res) => {
   }
 };
 
+const loginUser = async ({ body }, res) => {
+  const { email, password } = body;
+
+  try {
+    const user = await Users.findOne({ email }).select('+password');
+    if (user) {
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+      if (isPasswordValid) {
+        const token = jwt.sign({ _id: user._id }, jwtSecret, {
+          expiresIn: '1w',
+        });
+
+        return res.json({ token });
+      }
+    }
+
+    return res
+      .status(HttpStatus.UNAUTHORIZED)
+      .json({ message: HttpResponseMessage.UNAUTHORIZED });
+  } catch (err) {
+    console.error(err);
+    return res
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .json({ message: HttpResponseMessage.SERVER_ERROR });
+  }
+};
+
 module.exports = {
   createUser,
+  loginUser,
 };
