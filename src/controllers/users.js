@@ -42,7 +42,12 @@ const loginUser = async ({ body }, res) => {
           expiresIn: '1w',
         });
 
-        return res.json({ token });
+        return res
+          .cookie('access_token', token, {
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 24 * 7,
+          })
+          .json({ sucess: 'true' });
       }
     }
 
