@@ -63,7 +63,32 @@ const loginUser = async ({ body }, res) => {
   }
 };
 
+const updateUser = async (req, res) => {
+  const accessToken = req.cookies['access_token'];
+  const { _id: userId } = jwt.verify(accessToken, jwtSecret);
+
+  if (userId) {
+    const { name, about } = req.body;
+
+    try {
+      await Users.updateOne({ _id: userId }, { $set: { name, about } });
+
+      return res.status(HttpStatus.OK).json({ name, about });
+    } catch (err) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: HttpResponseMessage.INTERNAL_SERVER_ERROR,
+        details: err.message,
+      });
+    }
+  }
+
+  return res
+    .status(HttpStatus.BAD_REQUEST)
+    .json({ message: HttpResponseMessage.BAD_REQUEST });
+};
+
 module.exports = {
   createUser,
   loginUser,
+  updateUser,
 };

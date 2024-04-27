@@ -10,7 +10,13 @@ const loginUserValidator = Joi.object().keys({
   password: Joi.string().required(),
 });
 
+const updateUserValidator = Joi.object().keys({
+  name: Joi.string(),
+  about: Joi.string(),
+});
+
 module.exports = {
   createUserValidator,
   loginUserValidator,
+  updateUserValidator,
 };
