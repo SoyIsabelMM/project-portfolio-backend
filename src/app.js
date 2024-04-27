@@ -10,6 +10,8 @@ const {
   loginUserValidator,
   updateUserValidator,
 } = require('./payload-validators');
+
+const auth = require('./middlewares/auth');
 const { createUser, loginUser, updateUser } = require('./controllers/users');
 
 mongoose.connect(mongoDbConnectionString);
@@ -24,6 +26,9 @@ app.get('/ping', (_, res) => res.send('pong'));
 
 app.post('/users', celebrate({ body: createUserValidator }), createUser);
 app.post('/users/login', celebrate({ body: loginUserValidator }), loginUser);
+
+// Private routes
+app.use(auth);
 app.put('/users', celebrate({ body: updateUserValidator }), updateUser);
 
 app.use(errors());

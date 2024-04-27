@@ -64,8 +64,7 @@ const loginUser = async ({ body }, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const accessToken = req.cookies['access_token'];
-  const { _id: userId } = jwt.verify(accessToken, jwtSecret);
+  const { id: userId } = req.user;
 
   if (userId) {
     const { name, about } = req.body;
