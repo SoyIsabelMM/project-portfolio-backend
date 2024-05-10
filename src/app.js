@@ -12,7 +12,12 @@ const {
 } = require('./payload-validators');
 
 const auth = require('./middlewares/auth');
-const { createUser, loginUser, updateUser } = require('./controllers/users');
+const {
+  createUser,
+  loginUser,
+  updateUser,
+  getUser,
+} = require('./controllers/users');
 
 mongoose.connect(mongoDbConnectionString);
 
@@ -30,6 +35,7 @@ app.post('/users/login', celebrate({ body: loginUserValidator }), loginUser);
 // Private routes
 app.use(auth);
 app.put('/users', celebrate({ body: updateUserValidator }), updateUser);
+app.get('/users', getUser);
 
 app.use(errors());
 app.listen(port, () => console.log(`Server ready on port ${port}.`));

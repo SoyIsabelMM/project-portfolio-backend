@@ -5,8 +5,8 @@ const { jwtSecret } = require('../utils/get-env-vars');
 const { HttpStatus, HttpResponseMessage } = require('../enums');
 const Users = require('../models/user');
 
-const createUser = async (req, res) => {
-  const { email, password } = req.body;
+const createUser = async ({ body }, res) => {
+  const { email, password } = body;
 
   try {
     const { _id: id } = await Users.create({
@@ -23,6 +23,7 @@ const createUser = async (req, res) => {
     }
 
     console.error(err.message);
+
     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
       message: HttpResponseMessage.INTERNAL_SERVER_ERROR,
       details: err.message,
@@ -57,14 +58,15 @@ const loginUser = async ({ body }, res) => {
       .json({ message: HttpResponseMessage.UNAUTHORIZED });
   } catch (err) {
     console.error(err);
+
     return res
       .status(HttpStatus.INTERNAL_SERVER_ERROR)
       .json({ message: HttpResponseMessage.SERVER_ERROR });
   }
 };
 
-const updateUser = async (req, res) => {
-  const { id: userId } = req.user;
+const updateUser = async ({ user, body }, res) => {
+  const { id: userId } = user;
 
   if (userId) {
     const {
@@ -79,7 +81,7 @@ const updateUser = async (req, res) => {
       hobbies,
       activities,
       happyPlaces,
-    } = req.body;
+    } = body;
 
     try {
       await Users.updateOne(
@@ -117,8 +119,31 @@ const updateUser = async (req, res) => {
     .json({ message: HttpResponseMessage.BAD_REQUEST });
 };
 
+const getUser = async ({ user }, res) => {
+  const { id: _id } = user;
+
+  try {
+    const user = await Users.findOne({ _id }).select('-__v');
+
+    if (user) {
+      return res.status(HttpStatus.OK).json(user);
+    }
+
+    return res
+      .status(HttpStatus.NOT_FOUND)
+      .json({ message: HttpResponseMessage.NOT_FOUND });
+  } catch (err) {
+    console.error(err);
+
+    return res
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .json({ message: HttpResponseMessage.SERVER_ERROR });
+  }
+};
+
 module.exports = {
   createUser,
   loginUser,
   updateUser,
+  getUser,
 };
