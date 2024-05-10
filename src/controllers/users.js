@@ -150,7 +150,13 @@ const uploadUserImage = async ({ user, file, path }, res) => {
 
   if (
     !file ||
-    !['banner', 'avatar', 'resumeImage', 'hobbiesImage'].includes(fileType)
+    ![
+      'banner',
+      'avatar',
+      'resumeImage',
+      'hobbiesImage',
+      'happyPlacesImage',
+    ].includes(fileType)
   ) {
     return res
       .status(HttpStatus.BAD_REQUEST)
