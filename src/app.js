@@ -43,6 +43,7 @@ app.put('/users', celebrate({ body: updateUserValidator }), updateUser);
 app.get('/users', getUser);
 app.put('/users/avatar', upload.single('image'), uploadUserImage);
 app.put('/users/banner', upload.single('image'), uploadUserImage);
+app.put('/users/resumeImage', upload.single('image'), uploadUserImage);
 
 app.use(errors());
 app.listen(port, () => console.log(`Server ready on port ${port}.`));

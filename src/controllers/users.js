@@ -148,7 +148,7 @@ const uploadUserImage = async ({ user, file, path }, res) => {
   const { id: userId } = user;
   const fileType = path.replace('/users/', '');
 
-  if (!file || !['banner', 'avatar'].includes(fileType)) {
+  if (!file || !['banner', 'avatar', 'resumeImage'].includes(fileType)) {
     return res
       .status(HttpStatus.BAD_REQUEST)
       .send({ message: HttpResponseMessage.BAD_REQUEST });
