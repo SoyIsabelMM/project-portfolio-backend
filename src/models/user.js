@@ -18,10 +18,6 @@ const userSchema = new Schema({
     type: String,
     minlength: 2,
   },
-  about: {
-    type: String,
-    minlength: 2,
-  },
   avatar: {
     type: String,
     validate: {
@@ -31,8 +27,44 @@ const userSchema = new Schema({
       message: (props) => `${props.value} is not a valid url!`,
     },
   },
-  skills: {
-    type: [String],
+  banner: {
+    type: String,
+    validate: {
+      validator: function (v) {
+        return /^https?:\/\/[\w\-]+(\.[\w\-]+)+[/#?]?.*$/.test(v);
+      },
+      message: (props) => `${props.value} is not a valid url!`,
+    },
+  },
+  country: {
+    type: String,
+  },
+  birthDate: {
+    type: Date,
+  },
+  instagram: {
+    type: String,
+  },
+  facebook: {
+    type: String,
+  },
+  linkedin: {
+    type: String,
+  },
+  resume: {
+    type: String,
+  },
+  about: {
+    type: String,
+  },
+  hobbies: {
+    type: String,
+  },
+  activities: {
+    type: String,
+  },
+  happyPlaces: {
+    type: String,
   },
 });
 

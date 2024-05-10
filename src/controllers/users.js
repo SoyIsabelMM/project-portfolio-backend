@@ -67,12 +67,43 @@ const updateUser = async (req, res) => {
   const { id: userId } = req.user;
 
   if (userId) {
-    const { name, about } = req.body;
+    const {
+      name,
+      country,
+      birthDate,
+      instagram,
+      facebook,
+      linkedin,
+      resume,
+      about,
+      hobbies,
+      activities,
+      happyPlaces,
+    } = req.body;
 
     try {
-      await Users.updateOne({ _id: userId }, { $set: { name, about } });
+      await Users.updateOne(
+        { _id: userId },
+        {
+          $set: {
+            name,
+            country,
+            birthDate,
+            instagram,
+            facebook,
+            linkedin,
+            resume,
+            about,
+            hobbies,
+            activities,
+            happyPlaces,
+          },
+        }
+      );
 
-      return res.status(HttpStatus.OK).json({ name, about });
+      return res.status(HttpStatus.OK).json({
+        success: true,
+      });
     } catch (err) {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         message: HttpResponseMessage.INTERNAL_SERVER_ERROR,

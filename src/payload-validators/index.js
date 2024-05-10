@@ -13,6 +13,16 @@ const loginUserValidator = Joi.object().keys({
 const updateUserValidator = Joi.object().keys({
   name: Joi.string(),
   about: Joi.string(),
+  country: Joi.string(),
+  birthDate: Joi.date(),
+  instagram: Joi.string(),
+  facebook: Joi.string(),
+  linkedin: Joi.string(),
+  resume: Joi.string(),
+  about: Joi.string(),
+  hobbies: Joi.string(),
+  activities: Joi.string(),
+  happyPlaces: Joi.string(),
 });
 
 module.exports = {
