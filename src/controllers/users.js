@@ -46,13 +46,13 @@ const loginUser = async ({ body }, res) => {
           expiresIn: '1w',
         });
 
-        const { name = '', about = '', avatar = '' } = user;
+        const { _id, name = '', about = '', avatar = '' } = user;
         return res
           .cookie('access_token', accessToken, {
             httpOnly: true,
             maxAge: 1000 * 60 * 60 * 24 * 7,
           })
-          .json({ email, name, about, avatar });
+          .json({ _id, email, name, about, avatar });
       }
     }
 
