@@ -21,7 +21,7 @@ const {
   loginUser,
   updateUser,
   getUser,
-  uploadAvatar,
+  uploadUserImage,
 } = require('./controllers/users');
 
 mongoose.connect(mongoDbConnectionString);
@@ -41,7 +41,8 @@ app.post('/users/login', celebrate({ body: loginUserValidator }), loginUser);
 app.use(auth);
 app.put('/users', celebrate({ body: updateUserValidator }), updateUser);
 app.get('/users', getUser);
-app.put('/users/avatar', upload.single('image'), uploadAvatar);
+app.put('/users/avatar', upload.single('image'), uploadUserImage);
+app.put('/users/banner', upload.single('image'), uploadUserImage);
 
 app.use(errors());
 app.listen(port, () => console.log(`Server ready on port ${port}.`));

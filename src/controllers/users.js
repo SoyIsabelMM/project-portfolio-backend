@@ -1,9 +1,9 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { put } = require('@vercel/blob');
 
 const { jwtSecret } = require('../utils/get-env-vars');
 const { HttpStatus, HttpResponseMessage } = require('../enums');
+const { uploadFile } = require('../utils/upload-file');
 
 // Models
 const Users = require('../models/user');
@@ -144,29 +144,23 @@ const getUser = async ({ user }, res) => {
   }
 };
 
-const uploadAvatar = async ({ user, file }, res) => {
+const uploadUserImage = async ({ user, file, path }, res) => {
   const { id: userId } = user;
-  if (!file) {
+  const fileType = path.replace('/users/', '');
+
+  if (!file || !['banner', 'avatar'].includes(fileType)) {
     return res
       .status(HttpStatus.BAD_REQUEST)
       .send({ message: HttpResponseMessage.BAD_REQUEST });
   }
 
   try {
-    const blob = await put(`${userId}_avatar`, file.buffer, {
-      access: 'public',
-      addRandomSuffix: false,
-      contentType: file.mimetype,
-    });
-
-    const date = new Date();
-    const imageUrl = `${blob.url}?d=${date.getTime()}`;
-
+    const imageUrl = await uploadFile({ userId, fileType: fileType, file });
     await Users.updateOne(
       { _id: userId },
       {
         $set: {
-          avatar: imageUrl,
+          [fileType]: imageUrl,
         },
       }
     );
@@ -186,5 +180,5 @@ module.exports = {
   loginUser,
   updateUser,
   getUser,
-  uploadAvatar,
+  uploadUserImage,
 };
