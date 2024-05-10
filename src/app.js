@@ -2,6 +2,10 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const { celebrate, errors } = require('celebrate');
+const multer = require('multer');
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 const { port, mongoDbConnectionString } = require('./utils/get-env-vars');
 
@@ -17,6 +21,7 @@ const {
   loginUser,
   updateUser,
   getUser,
+  uploadAvatar,
 } = require('./controllers/users');
 
 mongoose.connect(mongoDbConnectionString);
@@ -36,6 +41,7 @@ app.post('/users/login', celebrate({ body: loginUserValidator }), loginUser);
 app.use(auth);
 app.put('/users', celebrate({ body: updateUserValidator }), updateUser);
 app.get('/users', getUser);
+app.put('/users/avatar', upload.single('image'), uploadAvatar);
 
 app.use(errors());
 app.listen(port, () => console.log(`Server ready on port ${port}.`));

@@ -1,8 +1,11 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { put } = require('@vercel/blob');
 
 const { jwtSecret } = require('../utils/get-env-vars');
 const { HttpStatus, HttpResponseMessage } = require('../enums');
+
+// Models
 const Users = require('../models/user');
 
 const createUser = async ({ body }, res) => {
@@ -141,9 +144,47 @@ const getUser = async ({ user }, res) => {
   }
 };
 
+const uploadAvatar = async ({ user, file }, res) => {
+  const { id: userId } = user;
+  if (!file) {
+    return res
+      .status(HttpStatus.BAD_REQUEST)
+      .send({ message: HttpResponseMessage.BAD_REQUEST });
+  }
+
+  try {
+    const blob = await put(`${userId}_avatar`, file.buffer, {
+      access: 'public',
+      addRandomSuffix: false,
+      contentType: file.mimetype,
+    });
+
+    const date = new Date();
+    const imageUrl = `${blob.url}?d=${date.getTime()}`;
+
+    await Users.updateOne(
+      { _id: userId },
+      {
+        $set: {
+          avatar: imageUrl,
+        },
+      }
+    );
+
+    return res.status(HttpStatus.OK).send({ success: true, imageUrl });
+  } catch (error) {
+    console.error(err);
+
+    return res
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .json({ message: HttpResponseMessage.SERVER_ERROR });
+  }
+};
+
 module.exports = {
   createUser,
   loginUser,
   updateUser,
   getUser,
+  uploadAvatar,
 };
