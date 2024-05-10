@@ -54,17 +54,62 @@ const userSchema = new Schema({
   resume: {
     type: String,
   },
+  resumeImage: {
+    type: String,
+    validate: {
+      validator: function (v) {
+        return /^https?:\/\/[\w\-]+(\.[\w\-]+)+[/#?]?.*$/.test(v);
+      },
+      message: (props) => `${props.value} is not a valid url!`,
+    },
+  },
   about: {
     type: String,
+  },
+  aboutImage: {
+    type: String,
+    validate: {
+      validator: function (v) {
+        return /^https?:\/\/[\w\-]+(\.[\w\-]+)+[/#?]?.*$/.test(v);
+      },
+      message: (props) => `${props.value} is not a valid url!`,
+    },
   },
   hobbies: {
     type: String,
   },
+  hobbiesImage: {
+    type: String,
+    validate: {
+      validator: function (v) {
+        return /^https?:\/\/[\w\-]+(\.[\w\-]+)+[/#?]?.*$/.test(v);
+      },
+      message: (props) => `${props.value} is not a valid url!`,
+    },
+  },
   activities: {
     type: String,
   },
+  activitiesImage: {
+    type: String,
+    validate: {
+      validator: function (v) {
+        return /^https?:\/\/[\w\-]+(\.[\w\-]+)+[/#?]?.*$/.test(v);
+      },
+      message: (props) => `${props.value} is not a valid url!`,
+    },
+  },
   happyPlaces: {
     type: String,
+  },
+  happyPlacesImage: {
+    type: String,
+    validate: {
+      validator: function (v) {
+        return /^https?:\/\/[\w\-]+(\.[\w\-]+)+[/#?]?.*$/.test(v);
+      },
+      message: (props) => `${props.value} is not a valid url!`,
+    },
   },
 });
 
