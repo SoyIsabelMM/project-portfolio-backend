@@ -12,12 +12,16 @@ const createUser = async ({ body }, res) => {
   const { email, password } = body;
 
   try {
-    const { _id: id } = await Users.create({
-      email,
-      password: await bcrypt.hash(password, 10),
+    const { _id } = await Users.create({
+      email: email.trim(),
+      password: await bcrypt.hash(password.trim(), 10),
     });
 
-    return res.status(HttpStatus.CREATED).json({ id });
+    const token = jwt.sign({ _id }, jwtSecret, {
+      expiresIn: '1w',
+    });
+
+    return res.status(HttpStatus.CREATED).json({ _id, token, email });
   } catch (err) {
     if (err.message.includes('duplicate key error')) {
       return res
@@ -38,9 +42,14 @@ const loginUser = async ({ body }, res) => {
   const { email, password } = body;
 
   try {
-    const user = await Users.findOne({ email }).select('+password');
+    const user = await Users.findOne({ email: email.trim() }).select(
+      '+password'
+    );
     if (user) {
-      const isPasswordValid = await bcrypt.compare(password, user.password);
+      const isPasswordValid = await bcrypt.compare(
+        password.trim(),
+        user.password
+      );
       if (isPasswordValid) {
         const token = jwt.sign({ _id: user._id }, jwtSecret, {
           expiresIn: '1w',
