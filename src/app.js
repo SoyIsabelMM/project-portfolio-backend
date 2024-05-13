@@ -22,7 +22,7 @@ const {
   createUser,
   loginUser,
   updateUser,
-  getUser,
+  getUserProfile,
   uploadUserImage,
 } = require('./controllers/users');
 
@@ -39,11 +39,11 @@ app.get('/ping', (_, res) => res.send('pong'));
 
 app.post('/users', celebrate({ body: createUserValidator }), createUser);
 app.post('/users/login', celebrate({ body: loginUserValidator }), loginUser);
+app.get('/users/:userId/profile', getUserProfile);
 
 // Private routes
 app.use(auth);
 app.put('/users', celebrate({ body: updateUserValidator }), updateUser);
-app.get('/users', getUser);
 app.put('/users/avatar', upload.single('image'), uploadUserImage);
 app.put('/users/banner', upload.single('image'), uploadUserImage);
 app.put('/users/resumeImage', upload.single('image'), uploadUserImage);

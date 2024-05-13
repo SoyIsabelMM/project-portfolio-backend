@@ -117,8 +117,8 @@ const updateUser = async ({ user, body }, res) => {
     .json({ message: HttpResponseMessage.BAD_REQUEST });
 };
 
-const getUser = async ({ user }, res) => {
-  const { id: _id } = user;
+const getUserProfile = async ({ params }, res) => {
+  const { userId: _id } = params;
 
   try {
     const user = await Users.findOne({ _id }).select('-__v');
@@ -183,6 +183,6 @@ module.exports = {
   createUser,
   loginUser,
   updateUser,
-  getUser,
+  getUserProfile,
   uploadUserImage,
 };
