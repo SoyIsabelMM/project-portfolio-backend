@@ -10,16 +10,20 @@ const throwError = (res) => {
 };
 
 module.exports = (req, res, next) => {
-  const accessToken = req.cookies['access_token'];
+  const { authorization } = req.headers;
 
-  if (accessToken) {
-    try {
-      const { _id: id } = jwt.verify(accessToken, jwtSecret);
-      req.user = { id };
+  if (authorization && authorization.startsWith('Bearer ')) {
+    const accessToken = authorization.replace('Bearer ', '');
 
-      return next();
-    } catch (err) {
-      console.log('Auth err', err);
+    if (accessToken) {
+      try {
+        const { _id: id } = jwt.verify(accessToken, jwtSecret);
+        req.user = { id };
+
+        return next();
+      } catch (err) {
+        console.log('Auth err', err);
+      }
     }
   }
 

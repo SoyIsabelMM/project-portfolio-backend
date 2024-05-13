@@ -42,17 +42,12 @@ const loginUser = async ({ body }, res) => {
     if (user) {
       const isPasswordValid = await bcrypt.compare(password, user.password);
       if (isPasswordValid) {
-        const accessToken = jwt.sign({ _id: user._id }, jwtSecret, {
+        const token = jwt.sign({ _id: user._id }, jwtSecret, {
           expiresIn: '1w',
         });
 
         const { _id, name = '', about = '', avatar = '' } = user;
-        return res
-          .cookie('access_token', accessToken, {
-            httpOnly: true,
-            maxAge: 1000 * 60 * 60 * 24 * 7,
-          })
-          .json({ _id, email, name, about, avatar });
+        return res.json({ _id, token, email, name, about, avatar });
       }
     }
 
