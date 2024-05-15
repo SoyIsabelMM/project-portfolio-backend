@@ -55,8 +55,17 @@ const loginUser = async ({ body }, res) => {
           expiresIn: '1w',
         });
 
-        const { _id, name = '', about = '', avatar = '' } = user;
-        return res.json({ _id, token, email, name, about, avatar });
+        const { _id, firstName, lastName = '', about = '', avatar = '' } = user;
+
+        return res.json({
+          _id,
+          token,
+          email,
+          firstName,
+          lastName,
+          about,
+          avatar,
+        });
       }
     }
 
@@ -77,7 +86,8 @@ const updateUser = async ({ user, body }, res) => {
 
   if (userId) {
     const {
-      name,
+      firstName,
+      lastName,
       country,
       birthDate,
       instagram,
@@ -95,7 +105,8 @@ const updateUser = async ({ user, body }, res) => {
         { _id: userId },
         {
           $set: {
-            name,
+            firstName,
+            lastName,
             country,
             birthDate,
             instagram,
