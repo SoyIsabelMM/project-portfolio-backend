@@ -14,7 +14,11 @@ const userSchema = new Schema({
     required: true,
     select: false,
   },
-  name: {
+  firstName: {
+    type: String,
+    minlength: 2,
+  },
+  lastName: {
     type: String,
     minlength: 2,
   },
