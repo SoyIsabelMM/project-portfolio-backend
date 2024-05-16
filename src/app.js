@@ -15,9 +15,11 @@ const {
   createUserValidator,
   loginUserValidator,
   updateUserValidator,
+  createPortfolioValidator,
 } = require('./payload-validators');
 
 const auth = require('./middlewares/auth');
+
 const {
   createUser,
   loginUser,
@@ -26,6 +28,8 @@ const {
   getUserProfile,
   getUsersProfiles,
 } = require('./controllers/users');
+
+const { createPortfolio } = require('./controllers/portfolios');
 
 mongoose.connect(mongoDbConnectionString);
 
@@ -51,6 +55,12 @@ app.put('/users/banner', upload.single('image'), uploadUserImage);
 app.put('/users/resumeImage', upload.single('image'), uploadUserImage);
 app.put('/users/hobbiesImage', upload.single('image'), uploadUserImage);
 app.put('/users/happyPlacesImage', upload.single('image'), uploadUserImage);
+
+app.post(
+  '/portfolios',
+  celebrate({ body: createPortfolioValidator }),
+  createPortfolio
+);
 
 app.use(errors());
 app.listen(port, () => console.log(`Server ready on port ${port}.`));
