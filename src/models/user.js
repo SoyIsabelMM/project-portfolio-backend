@@ -117,4 +117,41 @@ const userSchema = new Schema({
   },
 });
 
+userSchema.index(
+  {
+    firstName: 'text',
+    lastName: 'text',
+    country: 'text',
+    instagram: 'text',
+    facebook: 'text',
+    linkedin: 'text',
+    resume: 'text',
+    about: 'text',
+  },
+  {
+    weights: {
+      firstName: 10,
+      lastName: 10,
+      country: 10,
+      instagram: 5,
+      facebook: 5,
+      linkedin: 5,
+      resume: 1,
+      about: 1,
+    },
+  }
+);
+
+userSchema.pre('find', syncIndexesMiddleware);
+
+async function syncIndexesMiddleware(next) {
+  try {
+    await this.model.syncIndexes();
+    console.log('Índices sincronizados');
+  } catch (err) {
+    console.error('Error al sincronizar los índices:', err);
+  }
+  next();
+}
+
 module.exports = model('user', userSchema);
