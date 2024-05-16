@@ -15,9 +15,11 @@ const {
   createUserValidator,
   loginUserValidator,
   updateUserValidator,
+  createPortfolioValidator,
 } = require('./payload-validators');
 
 const auth = require('./middlewares/auth');
+
 const {
   createUser,
   loginUser,
@@ -26,6 +28,12 @@ const {
   getUserProfile,
   getUsersProfiles,
 } = require('./controllers/users');
+
+const {
+  getPortfolios,
+  createPortfolio,
+  updatePortfolio,
+} = require('./controllers/portfolios');
 
 mongoose.connect(mongoDbConnectionString);
 
@@ -42,6 +50,7 @@ app.post('/users', celebrate({ body: createUserValidator }), createUser);
 app.post('/users/login', celebrate({ body: loginUserValidator }), loginUser);
 app.get('/users/profiles', getUsersProfiles);
 app.get('/users/:userId/profile', getUserProfile);
+app.get('/portfolios', getPortfolios);
 
 // Private routes
 app.use(auth);
@@ -51,6 +60,17 @@ app.put('/users/banner', upload.single('image'), uploadUserImage);
 app.put('/users/resumeImage', upload.single('image'), uploadUserImage);
 app.put('/users/hobbiesImage', upload.single('image'), uploadUserImage);
 app.put('/users/happyPlacesImage', upload.single('image'), uploadUserImage);
+
+app.post(
+  '/portfolios',
+  celebrate({ body: createPortfolioValidator }),
+  createPortfolio
+);
+app.put(
+  '/portfolios/:portfolioId',
+  celebrate({ body: createPortfolioValidator }),
+  updatePortfolio
+);
 
 app.use(errors());
 app.listen(port, () => console.log(`Server ready on port ${port}.`));
