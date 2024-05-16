@@ -24,6 +24,21 @@ const createPortfolio = async ({ user, body }, res) => {
   }
 };
 
+const getPortfolios = async (_, res) => {
+  try {
+    const portfolios = await Portfolios.find({}).select('-__v');
+
+    return res.status(HttpStatus.OK).json(portfolios);
+  } catch (err) {
+    console.error(err);
+
+    return res
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .json({ message: HttpResponseMessage.SERVER_ERROR });
+  }
+};
+
 module.exports = {
   createPortfolio,
+  getPortfolios,
 };

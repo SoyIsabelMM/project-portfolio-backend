@@ -29,7 +29,7 @@ const {
   getUsersProfiles,
 } = require('./controllers/users');
 
-const { createPortfolio } = require('./controllers/portfolios');
+const { createPortfolio, getPortfolios } = require('./controllers/portfolios');
 
 mongoose.connect(mongoDbConnectionString);
 
@@ -46,6 +46,7 @@ app.post('/users', celebrate({ body: createUserValidator }), createUser);
 app.post('/users/login', celebrate({ body: loginUserValidator }), loginUser);
 app.get('/users/profiles', getUsersProfiles);
 app.get('/users/:userId/profile', getUserProfile);
+app.get('/portfolios', getPortfolios);
 
 // Private routes
 app.use(auth);
