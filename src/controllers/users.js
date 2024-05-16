@@ -199,11 +199,19 @@ const getUserProfile = async ({ params }, res) => {
   }
 };
 
-const getUsersProfiles = async (_, res) => {
+const getUsersProfiles = async ({ query }, res) => {
+  const { search: searchTerm } = query;
+
+  const queryOptions = {
+    happyPlacesImage: { $exists: true, $ne: null },
+  };
+
+  if (searchTerm) {
+    queryOptions.$text = { $search: searchTerm };
+  }
+
   try {
-    const users = await Users.find({
-      happyPlacesImage: { $exists: true, $ne: null },
-    }).select({
+    const users = await Users.find(queryOptions).select({
       __v: 0,
       email: 0,
       birthDate: 0,
