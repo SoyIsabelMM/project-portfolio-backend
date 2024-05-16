@@ -137,28 +137,6 @@ const updateUser = async ({ user, body }, res) => {
     .json({ message: HttpResponseMessage.BAD_REQUEST });
 };
 
-const getUserProfile = async ({ params }, res) => {
-  const { userId: _id } = params;
-
-  try {
-    const user = await Users.findOne({ _id }).select('-__v');
-
-    if (user) {
-      return res.status(HttpStatus.OK).json(user);
-    }
-
-    return res
-      .status(HttpStatus.NOT_FOUND)
-      .json({ message: HttpResponseMessage.NOT_FOUND });
-  } catch (err) {
-    console.error(err);
-
-    return res
-      .status(HttpStatus.INTERNAL_SERVER_ERROR)
-      .json({ message: HttpResponseMessage.SERVER_ERROR });
-  }
-};
-
 const uploadUserImage = async ({ user, file, path }, res) => {
   const { id: userId } = user;
   const fileType = path.replace('/users/', '');
@@ -199,10 +177,54 @@ const uploadUserImage = async ({ user, file, path }, res) => {
   }
 };
 
+const getUserProfile = async ({ params }, res) => {
+  const { userId: _id } = params;
+
+  try {
+    const user = await Users.findOne({ _id }).select('-__v');
+
+    if (user) {
+      return res.status(HttpStatus.OK).json(user);
+    }
+
+    return res
+      .status(HttpStatus.NOT_FOUND)
+      .json({ message: HttpResponseMessage.NOT_FOUND });
+  } catch (err) {
+    console.error(err);
+
+    return res
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .json({ message: HttpResponseMessage.SERVER_ERROR });
+  }
+};
+
+const getUsersProfiles = async (_, res) => {
+  try {
+    const users = await Users.find({
+      happyPlacesImage: { $exists: true, $ne: null },
+    }).select({
+      __v: 0,
+      email: 0,
+      birthDate: 0,
+      resume: 0,
+    });
+
+    return res.status(HttpStatus.OK).json(users);
+  } catch (err) {
+    console.error(err);
+
+    return res
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .json({ message: HttpResponseMessage.SERVER_ERROR });
+  }
+};
+
 module.exports = {
   createUser,
   loginUser,
   updateUser,
   getUserProfile,
   uploadUserImage,
+  getUsersProfiles,
 };

@@ -22,8 +22,9 @@ const {
   createUser,
   loginUser,
   updateUser,
-  getUserProfile,
   uploadUserImage,
+  getUserProfile,
+  getUsersProfiles,
 } = require('./controllers/users');
 
 mongoose.connect(mongoDbConnectionString);
@@ -39,6 +40,7 @@ app.get('/ping', (_, res) => res.send('pong'));
 
 app.post('/users', celebrate({ body: createUserValidator }), createUser);
 app.post('/users/login', celebrate({ body: loginUserValidator }), loginUser);
+app.get('/users/profiles', getUsersProfiles);
 app.get('/users/:userId/profile', getUserProfile);
 
 // Private routes
