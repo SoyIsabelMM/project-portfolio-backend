@@ -29,7 +29,11 @@ const {
   getUsersProfiles,
 } = require('./controllers/users');
 
-const { createPortfolio, getPortfolios } = require('./controllers/portfolios');
+const {
+  getPortfolios,
+  createPortfolio,
+  updatePortfolio,
+} = require('./controllers/portfolios');
 
 mongoose.connect(mongoDbConnectionString);
 
@@ -61,6 +65,11 @@ app.post(
   '/portfolios',
   celebrate({ body: createPortfolioValidator }),
   createPortfolio
+);
+app.put(
+  '/portfolios/:portfolioId',
+  celebrate({ body: createPortfolioValidator }),
+  updatePortfolio
 );
 
 app.use(errors());
