@@ -26,8 +26,14 @@ const updateUserValidator = Joi.object().keys({
   happyPlaces: Joi.string(),
 });
 
+const createPortfolioValidator = Joi.object().keys({
+  title: Joi.string().required(),
+  description: Joi.string().required(),
+});
+
 module.exports = {
   createUserValidator,
   loginUserValidator,
   updateUserValidator,
+  createPortfolioValidator,
 };
