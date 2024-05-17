@@ -35,9 +35,15 @@ const createPortfolioValidator = Joi.object()
   })
   .unknown(true);
 
+const uploadPortfolioImageValidator = Joi.object().keys({
+  portfolioId: Joi.string().required(),
+  index: Joi.number().min(1).max(6).required(),
+});
+
 module.exports = {
   createUserValidator,
   loginUserValidator,
   updateUserValidator,
   createPortfolioValidator,
+  uploadPortfolioImageValidator,
 };

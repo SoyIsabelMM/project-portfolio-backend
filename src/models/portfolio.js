@@ -1,5 +1,16 @@
 const { Schema, model } = require('mongoose');
 
+const imageSchema = new Schema({
+  imageUrl: {
+    type: String,
+    required: true,
+  },
+  index: {
+    type: String,
+    required: true,
+  },
+});
+
 const portfolioSchema = new Schema({
   userId: {
     type: String,
@@ -16,7 +27,7 @@ const portfolioSchema = new Schema({
     minlength: 2,
   },
   images: {
-    type: [String],
+    type: [imageSchema],
   },
 });
 
