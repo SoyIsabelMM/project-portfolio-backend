@@ -16,6 +16,7 @@ const {
   loginUserValidator,
   updateUserValidator,
   createPortfolioValidator,
+  uploadPortfolioImageValidator,
 } = require('./payload-validators');
 
 const auth = require('./middlewares/auth');
@@ -33,6 +34,7 @@ const {
   getPortfolios,
   createPortfolio,
   updatePortfolio,
+  uploadPortfolioImage,
 } = require('./controllers/portfolios');
 
 mongoose.connect(mongoDbConnectionString);
@@ -42,7 +44,7 @@ app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
-// Public routes
+/* Public routes */
 app.get('/', (_, res) => res.send('Project Portfolio'));
 app.get('/ping', (_, res) => res.send('pong'));
 
@@ -50,10 +52,12 @@ app.post('/users', celebrate({ body: createUserValidator }), createUser);
 app.post('/users/login', celebrate({ body: loginUserValidator }), loginUser);
 app.get('/users/profiles', getUsersProfiles);
 app.get('/users/:userId/profile', getUserProfile);
+
 app.get('/portfolios', getPortfolios);
 
-// Private routes
+/* Private routes */
 app.use(auth);
+
 app.put('/users', celebrate({ body: updateUserValidator }), updateUser);
 app.put('/users/avatar', upload.single('image'), uploadUserImage);
 app.put('/users/banner', upload.single('image'), uploadUserImage);
@@ -71,6 +75,12 @@ app.put(
   '/portfolios/:portfolioId',
   celebrate({ body: createPortfolioValidator }),
   updatePortfolio
+);
+app.put(
+  '/portfolios/:portfolioId/images/:index',
+  celebrate({ params: uploadPortfolioImageValidator }),
+  upload.single('image'),
+  uploadPortfolioImage
 );
 
 app.use(errors());

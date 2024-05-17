@@ -1,4 +1,5 @@
 const { HttpStatus, HttpResponseMessage } = require('../enums');
+const { uploadFile } = require('../utils/upload-file');
 
 const Portfolios = require('../models/portfolio');
 
@@ -75,8 +76,62 @@ const updatePortfolio = async ({ user, params, body }, res) => {
   }
 };
 
+const uploadPortfolioImage = async ({ user, params, file }, res) => {
+  const { id: userId } = user;
+  const { portfolioId: _id, index } = params;
+
+  const fileType = `portfolio_${_id}_${index}`;
+
+  if (!file) {
+    return res
+      .status(HttpStatus.BAD_REQUEST)
+      .send({ message: HttpResponseMessage.BAD_REQUEST });
+  }
+
+  try {
+    const portfolio = await Portfolios.findOne({ _id, userId });
+    if (!portfolio) {
+      return res
+        .status(HttpStatus.NOT_FOUND)
+        .send({ message: HttpResponseMessage.NOT_FOUND });
+    }
+
+    const imageUrl = await uploadFile({ userId, fileType: fileType, file });
+    const update = await Portfolios.findOneAndUpdate(
+      { _id, userId, 'images.index': index },
+      { $set: { 'images.$.imageUrl': imageUrl } },
+      { new: true, useFindAndModify: false }
+    );
+
+    if (update) {
+      return res.status(HttpStatus.OK).send({ success: true, imageUrl, index });
+    }
+
+    const insert = await Portfolios.findOneAndUpdate(
+      { _id, userId },
+      {
+        $push: {
+          images: { imageUrl, index },
+        },
+      }
+    );
+
+    if (insert) {
+      return res.status(HttpStatus.OK).send({ success: true, imageUrl, index });
+    }
+
+    throw new Error(HttpResponseMessage.NOT_FOUND);
+  } catch (err) {
+    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+      message: HttpResponseMessage.SERVER_ERROR,
+      details: err.message,
+    });
+  }
+};
+
 module.exports = {
   getPortfolios,
   createPortfolio,
   updatePortfolio,
+  uploadPortfolioImage,
 };
