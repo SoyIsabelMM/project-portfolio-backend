@@ -43,7 +43,7 @@ const loginUser = async ({ body }, res) => {
 
   try {
     const user = await Users.findOne({ email: email.trim() }).select(
-      '+password'
+      '+password -__v -email'
     );
     if (user) {
       const isPasswordValid = await bcrypt.compare(
@@ -55,16 +55,48 @@ const loginUser = async ({ body }, res) => {
           expiresIn: '1w',
         });
 
-        const { _id, firstName, lastName = '', about = '', avatar = '' } = user;
+        const {
+          _id,
+          about,
+          activities,
+          country,
+          facebook,
+          happyPlaces,
+          hobbies,
+          instagram,
+          linkedin,
+          resume,
+          birthDate,
+          banner,
+          resumeImage,
+          hobbiesImage,
+          happyPlacesImage,
+          avatar,
+          firstName,
+          lastName,
+          activitiesImage,
+        } = user;
 
         return res.json({
           _id,
-          token,
-          email,
+          about,
+          activities,
+          country,
+          facebook,
+          happyPlaces,
+          hobbies,
+          instagram,
+          linkedin,
+          resume,
+          birthDate,
+          banner,
+          resumeImage,
+          hobbiesImage,
+          happyPlacesImage,
+          avatar,
           firstName,
           lastName,
-          about,
-          avatar,
+          activitiesImage,
         });
       }
     }
@@ -148,6 +180,7 @@ const uploadUserImage = async ({ user, file, path }, res) => {
       'avatar',
       'resumeImage',
       'hobbiesImage',
+      'activitiesImage',
       'happyPlacesImage',
     ].includes(fileType)
   ) {

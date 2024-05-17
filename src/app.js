@@ -59,6 +59,7 @@ app.put('/users/avatar', upload.single('image'), uploadUserImage);
 app.put('/users/banner', upload.single('image'), uploadUserImage);
 app.put('/users/resumeImage', upload.single('image'), uploadUserImage);
 app.put('/users/hobbiesImage', upload.single('image'), uploadUserImage);
+app.put('/users/activitiesImage', upload.single('image'), uploadUserImage);
 app.put('/users/happyPlacesImage', upload.single('image'), uploadUserImage);
 
 app.post(
