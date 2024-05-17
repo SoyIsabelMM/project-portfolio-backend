@@ -50,56 +50,16 @@ const loginUser = async ({ body }, res) => {
         password.trim(),
         user.password
       );
+
       if (isPasswordValid) {
         const token = jwt.sign({ _id: user._id }, jwtSecret, {
           expiresIn: '1w',
         });
 
-        const {
-          _id,
-          email,
-          about,
-          activities,
-          country,
-          facebook,
-          happyPlaces,
-          hobbies,
-          instagram,
-          linkedin,
-          resume,
-          birthDate,
-          banner,
-          resumeImage,
-          hobbiesImage,
-          happyPlacesImage,
-          avatar,
-          firstName,
-          lastName,
-          activitiesImage,
-        } = user;
-
+        delete user._doc.password;
         return res.json({
-          _id,
           token,
-          email,
-          about,
-          activities,
-          country,
-          facebook,
-          happyPlaces,
-          hobbies,
-          instagram,
-          linkedin,
-          resume,
-          birthDate,
-          banner,
-          resumeImage,
-          hobbiesImage,
-          happyPlacesImage,
-          avatar,
-          firstName,
-          lastName,
-          activitiesImage,
+          ...user._doc,
         });
       }
     }
