@@ -43,7 +43,7 @@ const loginUser = async ({ body }, res) => {
 
   try {
     const user = await Users.findOne({ email: email.trim() }).select(
-      '+password -__v -email'
+      '+password -__v'
     );
     if (user) {
       const isPasswordValid = await bcrypt.compare(
@@ -57,6 +57,7 @@ const loginUser = async ({ body }, res) => {
 
         const {
           _id,
+          email,
           about,
           activities,
           country,
@@ -79,6 +80,8 @@ const loginUser = async ({ body }, res) => {
 
         return res.json({
           _id,
+          token,
+          email,
           about,
           activities,
           country,
