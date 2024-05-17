@@ -80,6 +80,7 @@ const loginUser = async ({ body }, res) => {
 
         return res.json({
           _id,
+          token,
           email,
           about,
           activities,
