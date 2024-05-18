@@ -29,6 +29,10 @@ const portfolioSchema = new Schema({
   images: {
     type: [imageSchema],
   },
+  views: {
+    type: Number,
+    default: 0,
+  },
 });
 
 module.exports = model('portfolio', portfolioSchema);

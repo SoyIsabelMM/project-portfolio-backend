@@ -36,6 +36,7 @@ const {
   createPortfolio,
   updatePortfolio,
   uploadPortfolioImage,
+  addPortfolioViewCount,
 } = require('./controllers/portfolios');
 
 mongoose.connect(mongoDbConnectionString);
@@ -56,6 +57,7 @@ app.get('/users/:userId/profile', getUserProfile);
 
 app.get('/portfolios/:userId', getPortfolios);
 app.get('/portfolios/:userId/portfolio/:portfolioId', getPortfolioById);
+app.put('/portfolios/:portfolioId/view', addPortfolioViewCount);
 
 /* Private routes */
 app.use(auth);
