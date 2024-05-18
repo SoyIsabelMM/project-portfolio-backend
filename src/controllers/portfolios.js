@@ -19,6 +19,25 @@ const getPortfolios = async ({ params }, res) => {
   }
 };
 
+const getPortfolioById = async ({ params }, res) => {
+  const { userId, portfolioId } = params;
+
+  try {
+    const portfolio = await Portfolios.findOne({
+      _id: portfolioId,
+      userId,
+    }).select('-__v');
+
+    return res.status(HttpStatus.OK).json(portfolio);
+  } catch (err) {
+    console.error(err);
+
+    return res
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .json({ message: HttpResponseMessage.SERVER_ERROR });
+  }
+};
+
 const createPortfolio = async ({ user, body }, res) => {
   const { id: userId } = user;
   const { title, description } = body;
@@ -133,6 +152,7 @@ const uploadPortfolioImage = async ({ user, params, file }, res) => {
 
 module.exports = {
   getPortfolios,
+  getPortfolioById,
   createPortfolio,
   updatePortfolio,
   uploadPortfolioImage,
