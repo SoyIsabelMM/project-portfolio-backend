@@ -150,10 +150,31 @@ const uploadPortfolioImage = async ({ user, params, file }, res) => {
   }
 };
 
+const addPortfolioViewCount = async ({ params }, res) => {
+  const { portfolioId: _id } = params;
+
+  try {
+    const result = await Portfolios.findOneAndUpdate(
+      { _id },
+      { $inc: { views: 1 } }
+    );
+
+    return res.status(HttpStatus.OK).json({
+      success: true,
+    });
+  } catch (err) {
+    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+      message: HttpResponseMessage.INTERNAL_SERVER_ERROR,
+      details: err.message,
+    });
+  }
+};
+
 module.exports = {
   getPortfolios,
   getPortfolioById,
   createPortfolio,
   updatePortfolio,
   uploadPortfolioImage,
+  addPortfolioViewCount,
 };
