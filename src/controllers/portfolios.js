@@ -28,7 +28,13 @@ const getPortfolioById = async ({ params }, res) => {
       userId,
     }).select('-__v');
 
-    return res.status(HttpStatus.OK).json(portfolio);
+    if (portfolio) {
+      return res.status(HttpStatus.OK).json(portfolio);
+    }
+
+    return res
+      .status(HttpStatus.NOT_FOUND)
+      .json({ message: HttpResponseMessage.NOT_FOUND });
   } catch (err) {
     console.error(err);
 
