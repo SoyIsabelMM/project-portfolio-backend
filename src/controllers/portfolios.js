@@ -1,5 +1,5 @@
 const { HttpStatus, HttpResponseMessage } = require('../enums');
-const { uploadFile } = require('../utils/upload-file');
+const { uploadFile, deleteFiles } = require('../utils/files-utils');
 
 const Portfolios = require('../models/portfolio');
 
@@ -181,8 +181,25 @@ const deletePortfolio = async ({ user, params }, res) => {
   const { portfolioId: _id } = params;
 
   try {
-    await Portfolios.deleteOne({ _id, userId });
-    return res.status(HttpStatus.OK).json({ success: true });
+    const portfolio = await Portfolios.findOne({
+      _id,
+      userId,
+    });
+    if (portfolio) {
+      portfolioImagesUrls = portfolio.images.map((e) => {
+        const url = new URL(e.imageUrl);
+        url.search = '';
+        return url.toString();
+      });
+      await deleteFiles(portfolioImagesUrls);
+      await Portfolios.deleteOne({ _id, userId });
+
+      return res.status(HttpStatus.OK).json({ success: true });
+    }
+
+    return res
+      .status(HttpStatus.NOT_FOUND)
+      .json({ message: HttpResponseMessage.NOT_FOUND });
   } catch (err) {
     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
       message: HttpResponseMessage.INTERNAL_SERVER_ERROR,
