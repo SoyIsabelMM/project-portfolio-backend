@@ -170,6 +170,21 @@ const addPortfolioViewCount = async ({ params }, res) => {
   }
 };
 
+const deletePortfolio = async ({ user, params }, res) => {
+  const { id: userId } = user;
+  const { portfolioId: _id } = params;
+
+  try {
+    await Portfolios.deleteOne({ _id, userId });
+    return res.status(HttpStatus.OK).json({ success: true });
+  } catch (err) {
+    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+      message: HttpResponseMessage.INTERNAL_SERVER_ERROR,
+      details: err.message,
+    });
+  }
+};
+
 module.exports = {
   getPortfolios,
   getPortfolioById,
@@ -177,4 +192,5 @@ module.exports = {
   updatePortfolio,
   uploadPortfolioImage,
   addPortfolioViewCount,
+  deletePortfolio,
 };

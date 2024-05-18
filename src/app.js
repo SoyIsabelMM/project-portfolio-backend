@@ -37,6 +37,7 @@ const {
   updatePortfolio,
   uploadPortfolioImage,
   addPortfolioViewCount,
+  deletePortfolio,
 } = require('./controllers/portfolios');
 
 mongoose.connect(mongoDbConnectionString);
@@ -86,6 +87,7 @@ app.put(
   upload.single('image'),
   uploadPortfolioImage
 );
+app.delete('/portfolios/:portfolioId', deletePortfolio);
 
 app.use(errors());
 app.listen(port, () => console.log(`Server ready on port ${port}.`));
