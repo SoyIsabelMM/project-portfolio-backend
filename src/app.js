@@ -32,6 +32,7 @@ const {
 
 const {
   getPortfolios,
+  getPortfolioById,
   createPortfolio,
   updatePortfolio,
   uploadPortfolioImage,
@@ -54,6 +55,7 @@ app.get('/users/profiles', getUsersProfiles);
 app.get('/users/:userId/profile', getUserProfile);
 
 app.get('/portfolios/:userId', getPortfolios);
+app.get('/portfolios/:userId/portfolio/:portfolioId', getPortfolioById);
 
 /* Private routes */
 app.use(auth);
