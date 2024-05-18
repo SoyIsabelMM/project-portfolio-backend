@@ -1,5 +1,5 @@
 const { HttpStatus, HttpResponseMessage } = require('../enums');
-const { uploadFile } = require('../utils/upload-file');
+const { uploadFile, deleteFiles } = require('../utils/files-utils');
 
 const Portfolios = require('../models/portfolio');
 
@@ -28,7 +28,13 @@ const getPortfolioById = async ({ params }, res) => {
       userId,
     }).select('-__v');
 
-    return res.status(HttpStatus.OK).json(portfolio);
+    if (portfolio) {
+      return res.status(HttpStatus.OK).json(portfolio);
+    }
+
+    return res
+      .status(HttpStatus.NOT_FOUND)
+      .json({ message: HttpResponseMessage.NOT_FOUND });
   } catch (err) {
     console.error(err);
 
@@ -170,6 +176,38 @@ const addPortfolioViewCount = async ({ params }, res) => {
   }
 };
 
+const deletePortfolio = async ({ user, params }, res) => {
+  const { id: userId } = user;
+  const { portfolioId: _id } = params;
+
+  try {
+    const portfolio = await Portfolios.findOne({
+      _id,
+      userId,
+    });
+    if (portfolio) {
+      portfolioImagesUrls = portfolio.images.map((e) => {
+        const url = new URL(e.imageUrl);
+        url.search = '';
+        return url.toString();
+      });
+      await deleteFiles(portfolioImagesUrls);
+      await Portfolios.deleteOne({ _id, userId });
+
+      return res.status(HttpStatus.OK).json({ success: true });
+    }
+
+    return res
+      .status(HttpStatus.NOT_FOUND)
+      .json({ message: HttpResponseMessage.NOT_FOUND });
+  } catch (err) {
+    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+      message: HttpResponseMessage.INTERNAL_SERVER_ERROR,
+      details: err.message,
+    });
+  }
+};
+
 module.exports = {
   getPortfolios,
   getPortfolioById,
@@ -177,4 +215,5 @@ module.exports = {
   updatePortfolio,
   uploadPortfolioImage,
   addPortfolioViewCount,
+  deletePortfolio,
 };

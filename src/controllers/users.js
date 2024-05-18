@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 
 const { jwtSecret } = require('../utils/get-env-vars');
 const { HttpStatus, HttpResponseMessage } = require('../enums');
-const { uploadFile } = require('../utils/upload-file');
+const { uploadFile } = require('../utils/files-utils');
 
 // Models
 const Users = require('../models/user');
