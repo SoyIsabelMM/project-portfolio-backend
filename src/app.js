@@ -53,7 +53,7 @@ app.post('/users/login', celebrate({ body: loginUserValidator }), loginUser);
 app.get('/users/profiles', getUsersProfiles);
 app.get('/users/:userId/profile', getUserProfile);
 
-app.get('/portfolios', getPortfolios);
+app.get('/portfolios/:userId', getPortfolios);
 
 /* Private routes */
 app.use(auth);

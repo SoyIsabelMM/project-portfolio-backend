@@ -3,9 +3,11 @@ const { uploadFile } = require('../utils/upload-file');
 
 const Portfolios = require('../models/portfolio');
 
-const getPortfolios = async (_, res) => {
+const getPortfolios = async ({ params }, res) => {
+  const { userId } = params;
+
   try {
-    const portfolios = await Portfolios.find({}).select('-__v');
+    const portfolios = await Portfolios.find({ userId }).select('-__v');
 
     return res.status(HttpStatus.OK).json(portfolios);
   } catch (err) {
