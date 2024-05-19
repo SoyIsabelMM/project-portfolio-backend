@@ -133,16 +133,16 @@ userSchema.index(
       firstName: 10,
       lastName: 10,
       country: 10,
-      instagram: 5,
-      facebook: 5,
-      linkedin: 5,
-      resume: 1,
-      about: 1,
+      instagram: 10,
+      facebook: 10,
+      linkedin: 10,
+      resume: 5,
+      about: 5,
     },
   }
 );
 
-userSchema.pre('find', syncIndexesMiddleware);
+userSchema.pre('updateOne', syncIndexesMiddleware);
 
 async function syncIndexesMiddleware(next) {
   try {
