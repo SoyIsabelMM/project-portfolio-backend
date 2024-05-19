@@ -4,6 +4,8 @@ const jwt = require('jsonwebtoken');
 const { jwtSecret } = require('../utils/get-env-vars');
 const { HttpStatus, HttpResponseMessage } = require('../enums');
 const { uploadFile } = require('../utils/files-utils');
+const { sendEmail } = require('../utils/email-utils');
+const { CONTACT_EMAIL } = require('./contact-email-template');
 
 // Models
 const Users = require('../models/user');
@@ -224,6 +226,48 @@ const getUsersProfiles = async ({ query }, res) => {
   }
 };
 
+const sendContactEmail = async ({ params, body }, res) => {
+  const { userId: _id } = params;
+  const { firstName, lastName, email, message } = body;
+
+  try {
+    const user = await Users.findOne({ _id }).select({
+      email: 1,
+      firstName: 1,
+      lastName: 1,
+    });
+
+    if (user) {
+      const htmlMessage = CONTACT_EMAIL.replace(
+        '{{userFirstName}}',
+        user.firstName
+      )
+        .replace('{{firstName}}', firstName)
+        .replace('{{lastName}}', lastName)
+        .replace('{{email}}', email)
+        .replace('{{message}}', message);
+
+      await sendEmail({
+        recipientEmail: user.email,
+        recipientName: `${user.firstName} ${user.lastName}`,
+        htmlMessage,
+      });
+
+      return res.status(HttpStatus.OK).json({ success: true });
+    }
+
+    return res
+      .status(HttpStatus.NOT_FOUND)
+      .json({ message: HttpResponseMessage.NOT_FOUND });
+  } catch (err) {
+    console.error(err);
+
+    return res
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .json({ message: HttpResponseMessage.SERVER_ERROR });
+  }
+};
+
 module.exports = {
   createUser,
   loginUser,
@@ -231,4 +275,5 @@ module.exports = {
   getUserProfile,
   uploadUserImage,
   getUsersProfiles,
+  sendContactEmail,
 };

@@ -40,10 +40,18 @@ const uploadPortfolioImageValidator = Joi.object().keys({
   index: Joi.number().min(1).max(6).required(),
 });
 
+const contactEmailValidator = Joi.object().keys({
+  firstName: Joi.string().required().not(''),
+  lastName: Joi.string().required().not(''),
+  email: Joi.string().required().not(''),
+  message: Joi.string().required().not(''),
+});
+
 module.exports = {
   createUserValidator,
   loginUserValidator,
   updateUserValidator,
   createPortfolioValidator,
   uploadPortfolioImageValidator,
+  contactEmailValidator,
 };

@@ -17,6 +17,7 @@ const {
   updateUserValidator,
   createPortfolioValidator,
   uploadPortfolioImageValidator,
+  contactEmailValidator,
 } = require('./payload-validators');
 
 const auth = require('./middlewares/auth');
@@ -28,6 +29,7 @@ const {
   uploadUserImage,
   getUserProfile,
   getUsersProfiles,
+  sendContactEmail,
 } = require('./controllers/users');
 
 const {
@@ -55,6 +57,11 @@ app.post('/users', celebrate({ body: createUserValidator }), createUser);
 app.post('/users/login', celebrate({ body: loginUserValidator }), loginUser);
 app.get('/users/profiles', getUsersProfiles);
 app.get('/users/:userId/profile', getUserProfile);
+app.post(
+  '/users/:userId/contact',
+  celebrate({ body: contactEmailValidator }),
+  sendContactEmail
+);
 
 app.get('/portfolios/:userId', getPortfolios);
 app.get('/portfolios/:userId/portfolio/:portfolioId', getPortfolioById);
